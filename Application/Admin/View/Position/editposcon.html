@@ -1,0 +1,196 @@
+<extend name="Public/base" />
+<block name="content">
+	<!-- content start -->
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg"><a href="__CONTROLLER__/PosConlist.html">文章位内容管理</a></strong> /
+					<small>{$title}</small>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="am-tabs am-margin" data-am-tabs>
+				<ul class="am-tabs-nav am-nav am-nav-tabs">
+					<li class="am-active"><a href="#tab1">基本信息</a></li>
+				</ul>
+
+				<div class="am-tabs-bd">
+					<div class="am-tab-panel am-fade am-in am-active" id="tab1">
+						<notempty name="message">
+							<div class="am-alert am-alert-danger" data-am-alert>
+								{$message}
+							</div>
+						</notempty>
+						<form class="am-form" method="post">
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									标题
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="title" value="{$info.title}" class="am-input-sm">
+									<input type="hidden" name="id" value="{$info.id}">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">所属栏目</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<select name="position_id" data-am-selected="{btnSize: 'md'}">
+										<foreach name='positions' item='v'>
+											<option {$info['position_id']==$v['id'] ? 'selected=true':''} value="{$v.id}">{$v.name}</option>
+										</foreach>
+									</select>
+								</div>
+							</div>
+
+							<!--————————————————————————————————————————————————————————-->
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									缩略图
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<div class="am-input-group ">
+										<input type="text" name="thumb" value="{$info.thumb}" id="image" autocomplete="off" readonly>
+										<span class="am-input-group-btn">
+											<button class="am-btn am-btn-default" id="img_upload" onclick="return false;">选择图片</button>
+										</span>
+									</div>
+									<div class="am-input-group " style="margin-top: .5em;border: 1px solid #cccccc;">
+										<img src="<?php echo $info['thumb'] ? '/Upload/'.$info['thumb']:'/public/uploadify/upload.png';?>" width="150" id="img_show">
+									</div>
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									url
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="url" value="{$info.url}" placeholder="必须加上http://" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									文章ID
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="article_id" placeholder="和文章无关可以不添加" value="{$info.article_id}" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">状态</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<div class="am-btn-group" data-am-button>
+										<label class="am-btn am-btn-default am-btn-xs">
+											<input type="radio" name="status" value=1 <if condition="$info.status eq 1"> checked</if>> 开启
+										</label>
+										<label class="am-btn am-btn-default am-btn-xs">
+											<input type="radio" name="status" value=0 <if condition="$info.status eq 0"> checked</if>> 关闭
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2">&nbsp;</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="submit" id="save" class="am-btn am-btn-primary am-btn-xs" value="提交保存">
+									<a href="" type="button" class="am-btn am-btn-primary am-btn-xs">放弃保存</a>
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	<!-- content end -->
+</block>
+<block name="js">
+	<script type="text/javascript" src="__PUBLIC__/uploadify/jquery.uploadify.min.js"></script>
+	<script>
+
+		$(function() {
+			$('.am-form').submit(function() {
+				var data=$('.am-form').serializeArray();
+				var postData={};
+				$(data).each(function(){
+					postData[this.name]=this.value;
+				});
+				$.post("__CONTROLLER__/updatePosCon",postData,function(msg){
+					if (msg.status==1) {
+						dialog.success2(msg.message);
+					} else {
+						dialog.error(msg.message);
+					}
+				});
+				return false;
+			});
+		});
+		/**************************图片上传***************************8*/
+		var uploadConfig={
+			'buttonClass' : 'am-btn am-btn-default',
+			'multi' : false,
+			'swf' : '__PUBLIC__/uploadify/uploadify.swf',///Public/uploadify/uploadify.swf
+			'uploader' : '__MODULE__/Upload/index.html',
+			'fileTypeExts' : '*.jpg;*.png',
+			'fileSizeLimit' : '3MB',
+			'formData' : {
+				'thumb' : 1
+			},
+			'onInit' : function(instance) {
+				$("#img_upload").attr('style', '');
+				instance.button.removeClass("uploadify-button").attr('style', '').html('选择图片');
+			},
+			'overrideEvents' : [ 'onSelectError', 'onDialogClose' ],
+			'onSelectError' : function(file, errorCode, errorMsg) {
+				switch (errorCode) {
+					case -100:
+						dialog.error("上传的文件数量已经超出系统限制的"
+								+ $('#img_upload').uploadify('settings', 'queueSizeLimit')
+								+ "个文件！");
+						break;
+					case -110:
+						dialog.error("文件 \"" + file.name + "\" 大小超出系统限制的"
+								+ $('#img_upload').uploadify('settings', 'fileSizeLimit')
+								+ "大小！");
+						break;
+					case -120:
+						dialog.error("文件 \"" + file.name + "\" 大小异常！");
+						break;
+					case -130:
+						dialog.error("文件 \"" + file.name + "\" 类型不正确！");
+						break;
+					default:
+						msgText += "错误代码：" + errorCode + "\n" + errorMsg;
+				}
+			},
+			'onUploadSuccess' : function(file, data, response) {
+				var code=$(data).find('code').text();
+				if(code==0){
+					dialog.success2('图片上传成功');
+					var img=$(data).find('thumb').text();
+					$("#image").val(img);
+					$("#img_show").attr('src', '{$Think.const.upload_path}'+img);
+				}else{
+					dialog.error($(data).find('msg').text());
+				}
+			}
+		};
+		$('#img_upload').uploadify(uploadConfig);
+	</script>
+</block>

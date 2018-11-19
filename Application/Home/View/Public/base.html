@@ -1,0 +1,247 @@
+<?php
+    $menus1=D('Menu')->where('status=1 and type=0 and level=1')->order('listorder desc')->select();
+    $menus2=D('Menu')->where('status=1 and type=0 and level=2')->order('listorder desc')->select();
+    $config=F('basic_web_config');
+    $tag=D('Menu')->where('status=1 and type=0 and level=2 and parent_id!=0')->select();
+    $zhuijin=D("Article")->getMainList(array('status'=>1),'','',5);
+    $zhuihot=D("Article")->getMainList(array('status'=>1),'','',6);
+    $filling=D("Article")->field('FROM_UNIXTIME(create_time,"%m") m,FROM_UNIXTIME(create_time,"%Y") Y,FROM_UNIXTIME(create_time,"%Y年%m月") Ym')->group('Ym')->select();
+    foreach($filling as $k=>$value){
+		$filling[$k]['num']=count(D('Article')->field("FROM_UNIXTIME(create_time,'%Y%m%d') Ym")->having("month(Ym)=".$value['m']." and year(Ym)=".$value['Y'])->where('status=1')->select());
+    }
+    $blogRoll=M('blogroll')->select();
+?>
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta name="baidu-site-verification" content="7Y4ojKDmmu" />
+    <meta charset="UTF-8">
+    <title>{$config['title']} | Blog</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="keywords" content="{$config['keywords']}" />
+    <meta name="description" content="{$config['description']}" />
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta property="qc:admins" content="132006351662117556470" />
+    <link rel="alternate icon" type="image/png" href="__PUBLIC__/i/favicon.png">
+    <link rel="stylesheet" href="__PUBLIC__/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/css/share.css"/>
+    <!-- tanmu -->
+    <!-- <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/barrager.css"> -->
+    <link rel="stylesheet" href="__PUBLIC__/css/index.css"/>
+    <style>
+        .imgdiv{
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+
+        }
+        .article:hover .thumb{
+            transition:all 0.5s;
+            transform:scale(1.2);
+        }
+        #clock{
+            margin: 10px auto;
+        }
+        .to-top { display: none; padding: 10px 20px; color: #fff; background-color: #f50;}
+    </style>
+</head>
+<body>
+<header class="am-topbar am-topbar-inverse">
+    <h1 class="am-topbar-brand">
+        <a href="/">BaAGee</a>
+    </h1>
+
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+            data-am-collapse="{target: '#doc-topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span
+            class="am-icon-bars"></span></button>
+
+    <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
+        <ul class="am-nav am-nav-pills am-topbar-nav">
+            <li class="<?php echo $active==1?'am-active':'';?>"><a href="/">首页</a></li>
+         
+            <foreach name="menus1" item="v1">
+            <if condition="$v1.f eq ''">
+            <li class="am-dropdown" data-am-dropdown>
+                <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                    <if condition="$v.level eq 0">
+                        {$v1.name}
+                    </if>
+                     <span class="am-icon-caret-down"></span>
+                </a>
+                <ul class="am-dropdown-content">
+                <foreach name="menus2" item="v2">
+                    <if condition="$v2['parent_id'] eq $v1['menu_id']">
+                     <li><a href="__MODULE__/{$v2.c}/{$v2.f}/catid/{$v2.menu_id}.html">{$v2.name}</a></li>
+                    </if>
+                </foreach>
+                  <!-- <li><a href="#">关于我们</a></li>
+                   <li><a href="#">关于字体</a></li>
+                   <li><a href="#">TIPS</a></li> -->
+
+                </ul>
+            </li>
+            <else />
+            	<li><a href="__MODULE__/{$v1.c}/{$v1.f}.html">{$v1.name}</a></li>
+        	</if>
+            </foreach>
+            <!-- <li><a href="tencent://message/?uin=1270919836&Site=Sambow&Menu=yes">点击与我QQ联系</a></li> -->
+        </ul>
+
+        <form class="am-topbar-form am-topbar-left am-form-inline am-topbar-right" action="__CONTROLLER__/search.html" method="post" role="search">
+            <div class="am-form-group">
+                <input type="text" name="title" class="am-form-field am-input-sm" placeholder="搜索文章">
+            </div>
+            <input type="submit" class="am-btn am-btn-success am-btn-sm" value="搜索">
+        </form>
+		<div class="am-topbar-right">
+		<empty name='userinfo'>
+      		<button class="am-btn am-btn-primary am-topbar-btn am-btn-sm" onclick='login()'>
+      			<img src="__PUBLIC__/images/Connect_logo_7.png">
+      		</button>
+      		<else />
+      		<div style="line-height:48px">
+      		欢迎登陆：<img src='{$userinfo.figureurl_2}' alt="头像" class="am-comment-avatar" width="48" height="48"/>
+      		{$userinfo.nickname}
+      		</div>
+      	</empty>
+    	</div>
+    </div>
+</header>
+
+<div class="am-u-md-6 am-u-lg-7 am-u-sm-12 am-u-md-offset-1 am-u-lg-offset-1">
+    <block name="main"></block>
+</div>
+<div class="am-u-md-4 am-u-lg-3 am-u-sm-12 ">
+
+    <!-- <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">当前时间</div>
+             <div class="clock" id="clock"></div>
+    </div> -->
+
+        <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">最热文章</div>
+        <div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+                <ul class="am-list">
+                <foreach name="zhuihot" item="v">
+                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-popover="{theme: 'success sm',content: '<?php echo getMenu($v['catid']);?>', trigger: 'hover focus'}" style="margin-bottom: 8px;">
+                        <div class="am-u-sm-3 am-list-thumb">
+                            <a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="rthumb">
+                                <img src="/Upload/{$v.thumb}" alt="{$v.title}"/>
+                            </a>
+                        </div>
+                        <div class=" am-u-sm-9 am-list-main">
+                            <h3 class="am-list-item-hd"><a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="ltitle">{$v.title}</a></h3>
+                            <div class="am-list-item-text">&nbsp;<span class="am-icon-clock-o">&nbsp;</span>：{$v.create_time|date="Y-m-d H:i",###} |&nbsp;<span class="am-icon-eye">&nbsp;</span>:{$v.visits}</div>
+                        </div>
+                    </li>
+                </foreach>
+                </ul>
+        </div>
+    </div>
+
+    <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">标签</div>
+            <div id="tagscloud">
+            <for start="1" end="5">
+                <foreach name="tag" item="v">
+                    <a class="tagc2" style="background-color:{$v.menu_bgcolor}" href="__MODULE__/{$v.c}/{$v.f}/catid/{$v.menu_id}.html">{$v.name}</a>
+                </foreach>
+            </for>
+            </div>
+    </div>
+
+    <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">最新文章</div>
+        <div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+                <ul class="am-list">
+                <foreach name="zhuijin" item="v">
+                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-popover="{theme: 'success sm',content: '<?php echo getMenu($v['catid']);?>', trigger: 'hover focus'}" style="margin-bottom: 8px;">
+                        <div class="am-u-sm-3 am-list-thumb">
+                            <a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="rthumb">
+                                <img src="/Upload/{$v.thumb}" alt="{$v.title}"/>
+                            </a>
+                        </div>
+                        <div class=" am-u-sm-9 am-list-main">
+                            <h3 class="am-list-item-hd"><a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="ltitle">{$v.title}</a></h3>
+                            <div class="am-list-item-text">&nbsp;<span class="am-icon-clock-o">&nbsp;</span>：{$v.create_time|date="Y-m-d H:i",###} |&nbsp;<span class="am-icon-eye">&nbsp;</span>:{$v.visits}</div>
+                        </div>
+                    </li>
+                </foreach>
+                </ul>
+        </div>
+    </div>
+
+    <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">文章归档</div>
+        <div class="am-panel-bd" style="text-align:center">
+        <foreach name="filling" item="v">
+        	<a style="margin:1%" data-am-popover="{theme: 'success sm',content: '<?php echo $v['num'];?>篇', trigger: 'hover focus'}" class="am-btn am-radius am-btn-secondary" href="__CONTROLLER__/articlelist/Y/{$v['Y']}/m/{$v['m']}.html">{$v['Ym']}</a>
+    	</foreach>
+    </div>
+    </div>
+
+    <div class="am-panel am-panel-primary">
+        <div class="am-panel-hd">友情链接</div>
+            <div class="am-panel-bd" style="text-align:center">
+                <foreach name="blogRoll" item="v">
+                   <a style="margin:1%" target="__blank" class="am-badge am-badge-{$v.color} am-text-lg" href="{$v.link}">
+                   <span class="am-icon-link"></span>
+                   {$v.title}
+                   </a>
+                </foreach>
+            </div>
+    </div>
+
+</div>
+
+
+<div class="am-u-md-12 am-u-lg-12 am-u-sm-12" id="footer">
+    <footer class="blog-footer">
+        <p>BaAGee Blog<br/>
+            <small>{$config['record']}</small>
+        </p>
+    </footer>
+</div>
+
+
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="__PUBLIC__/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<!--<![endif]-->
+<script src="__PUBLIC__/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/js/tagscloud.js"></script>
+<script src="__PUBLIC__/js/jquery.toTop.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/dialog.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/share.js"></script>
+<!-- <script src="__PUBLIC__/js/clock-1.1.0.min.js"></script> -->
+<!-- <script>
+    var clock = $("#clock").clock(),
+    data = clock.data('clock');
+    var d = new Date();
+    d.setHours(9);
+    d.setMinutes(51);
+    d.setSeconds(20);
+</script> -->
+<script>
+$(function() {
+    $('.to-top').toTop();
+});
+function login(){
+	location.href="/Connect_PHP_SDK_for_OAuth2_V1.0/oauth/qq_login.php";
+}
+</script>
+<!-- <script type="text/javascript" src="__PUBLIC__/js/jquery.barrager.min.js"></script> -->
+<a class="to-top am-icon-arrow-up"></a>
+</body>
+<block name="js"></block>
+</html>

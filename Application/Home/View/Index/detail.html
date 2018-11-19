@@ -1,0 +1,215 @@
+<extend name="Public/base" />
+	<block name="main">
+	<link rel="stylesheet" href="__PUBLIC__/barrager/css/barrager.css"/>
+	<style>
+		.am-comment:hover img{
+			padding: 0 auto;
+			transform:rotate(360deg);
+		}
+	</style>
+	<ol class="am-breadcrumb">
+	  <li><a href="/" class="am-icon-home">首页</a></li>
+	  <li class="am-active">文章内容</li>
+	</ol>
+		<article class="am-article">
+		  <div class="am-article-hd">
+		    <h1 class="am-article-title" style="color:{$article['title_font_color']}">{$article['title']}</h1>
+		    <p class="am-article-meta">BaAGee 在 {$article.create_time|date="Y-m-d H:i:s",###}记录</p>
+		  </div>
+
+		  <div class="am-article-bd">
+		    <p class="am-article-lead">
+		    	描述 ：{$article.description}
+		    </p>
+		    {$article.content|htmlspecialchars_decode}
+		  </div>
+		</article><hr>
+		<div id="socialShare"></div><hr>
+		<div class="am-panel am-panel-default">
+		    <div class="am-panel-bd">
+		    	<div class="am-g">
+				  <div style="padding:0" class="am-u-sm-12 am-u-md-6">
+				  上一篇：
+				  <if condition="$sx[0] neq ''">
+				  <a href="__CONTROLLER__/detail/article/{$sx[0]['article_id']}.html">{$sx[0]['title']}</a>
+				  <else />
+				  -_-! 没有了~
+				</if>
+				  </div>
+				  <div style="padding:0" class="am-u-sm-12 am-u-md-6">
+				  下一篇：
+				  <if condition="$sx[1] neq ''">
+				  <a href="__CONTROLLER__/detail/article/{$sx[1]['article_id']}.html">{$sx[1]['title']}</a>
+				  <else />
+				  -_-! 没有了~
+				</if>
+				  </div>
+				</div>
+		    </div>
+		</div>
+
+		<div class="am-panel am-panel-primary">
+  <div class="am-panel-hd"><div>评论区/最近10条评论
+  <notempty name="Think.session.openid">
+   <button type="button" class="am-btn am-btn-success am-fr am-btn-xs" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 530, height: 300}"> 发表评论 </button>
+   <else />
+   <button type="button" class="am-btn am-btn-success am-fr am-btn-xs" onclick='login()'>
+   <span class="am-icon-qq"> QQ登录</span>
+   </button>
+	</notempty>
+   </div></div>
+  <div class="am-panel-bd">
+  <empty name="comments">
+  <h4><span style="text-align:center">没有评论</span></h4>
+  </empty>
+  <foreach name="comments" item="v">
+	<article class="am-comment">
+  <a>
+    <img src='{$v.figureurl}' alt="头像" style="transition:all 0.5s;" class="am-comment-avatar" width="48" height="48"/>
+  </a>
+  <div class="am-comment-main">
+    <header class="am-comment-hd">
+      <div class="am-comment-meta">
+        <a class="am-comment-author">
+        <span id="{$v.id}">
+        {$v.nickname}
+        </span>
+        </a>
+        <notempty name="v['to']">
+			回复：<span class="am-badge am-badge-warning am-radius">{$v['to']}  </span>
+			<else />
+			评论于 
+        </notempty>
+        <time datetime="{$v.time|date='Y-m-d H:i:s',###}" title="{$v.time|date='Y-m-d H:i:s',###}">{$v.time|date='Y-m-d H:i:s',###}</time><br>
+        <span class="am-badge am-badge-danger am-radius"><span class="am-icon-desktop"> ：</span>{$v.os}</span>
+		<span class="am-badge am-badge-success am-radius"><span class="am-icon-edge"> ：</span>{$v.browse}</span>
+      </div>
+    </header>
+    <div class="am-comment-bd">
+     {$v.comment}
+     <notempty name="v['to']">
+     <header class="am-comment-hd">
+      <div class="am-comment-meta">
+        <a class="am-comment-author">
+        <img src='{$v.tofig}' alt="头像" style="border-radius:50% 50% 50% 50%;transition:all 0.5s;" width="30" height="30"/>
+        {$v.to}：
+        <time datetime="{$v.totim|date='Y-m-d H:i:s',###}" title="{$v.totim|date='Y-m-d H:i:s',###}">{$v.totim|date='Y-m-d H:i:s',###}</time>
+    </a>
+    <br>{$v['tocom']}
+	</header>
+	</notempty>
+<!-- #adminimg{transition:all 0.5s;} -->
+		
+    <div class="am-comment-footer am-comment-actions">
+    	<a href='javascript:;' onclick="like({$v.id},{$v.like})"><i id="like{$v.id}" class="am-icon-thumbs-o-up">点赞({$v.like})</i></a>
+    	<a href='javascript:;' onclick="ccc({$v.id})" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 530, height: 320}"><i class="am-icon-reply">回复</i></a>
+    </div>
+  </div>
+</article><hr>
+	</foreach>
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd"><span>发表评论</span>
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd">
+      <form class="am-form am-form-horizontal" id="comments">
+      	<div class="am-form-group">
+      		<input type="email" name="email" id="doc-ipt-email-1" placeholder="英雄，留下你的email...  用于接收回复消息">
+      	    	</div>
+		  <div class="am-form-group">
+			    <textarea rows="5" id="comment" name="comment" placeholder="同在江湖飘，说话怎能不装逼..."></textarea>
+	    </div><hr>
+	    <div style="padding:0" class="am-u-sm-12">
+	    <span><img src="__CONTROLLER__/verify" onclick="this.src='__CONTROLLER__/verify/'+Math.random()" alt="验证码" width="100px" height="37px"></span><div style="padding:0" class="am-u-sm-6">
+	    <input type="text" name="verify" value="" placeholder="输入验证码"></div>
+			<input type="hidden" name="article_id" value="{$article['article_id']}">
+		      <input type="submit" class="am-btn am-btn-success" value="提交">
+		  </div>
+		</form>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+	</block>
+	<block name="js">
+		<script type="text/javascript" src="__PUBLIC__/barrager/jquery.barrager.min.js"></script>
+		<script>
+			do{
+				if({$jsonComments}===null){
+					// throw "jsonComments is null";
+					break;
+				}
+			
+				//每条弹幕发送间隔
+				var looper_time=3*1000;
+				var items={$jsonComments};
+				//弹幕总数
+				var total={$jsonComments}.length;
+				//是否首次执行
+				var run_once=true;
+				//弹幕索引
+				var index=0;
+				//先执行一次
+				barrager();
+				function  barrager(){
+					if(run_once){
+					    //如果是首次执行,则设置一个定时器,并且把首次执行置为false
+					    looper=setInterval(barrager,looper_time);                
+					    run_once=false;
+					}
+					//发布一个弹幕
+					$('body').barrager(items[index]);
+					//索引自增
+					index++;
+					//所有弹幕发布完毕，清除计时器。
+					if(index == total){
+					    clearInterval(looper);
+					    return false;
+					}
+				}
+			}while(false);
+		</script>
+	<script>
+		$(function() {
+            $("#socialShare").socialShare({
+                content: "<?php echo $article['title'];?>",
+				url:'http://{$Think.server.server_name}__CONTROLLER__/detail/article/{$Think.get.article}.html',
+				titile:"<?php echo $article['title'];?>"
+            });
+        });
+		$("#comments").submit(function(event) {
+			var postData=$(this).serialize();
+			$.post('__CONTROLLER__/comment', postData, function(res) {
+				if(res.status==1){
+					dialog.success2(res.message);
+					location.reload();
+				}else{
+					dialog.error(res.message);
+				}
+			});
+			return false;
+		});
+		
+		function ccc(id){
+			var to=$("#"+id).text();
+			$('.am-modal-hd span').text('回复'+to);
+			var html="<input type='hidden' name='to' value='"+id+"'>";
+			$('.am-form-group').eq(1).append(html);
+		}
+		/*点赞*/
+		function like(id,like){
+			$.post('__CONTROLLER__/like', {id:id,like:like+1}, function(res) {
+				if(res.status==1){
+					dialog.success2(res.message);
+					$('#like'+id).removeClass('am-icon-thumbs-o-up').addClass('am-icon-thumbs-up').text('点赞('+(like+1)+')');
+				}else{
+					dialog.error(res.message);
+				}
+			});
+		}
+	</script>
+	</block>

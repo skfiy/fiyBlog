@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>关于我</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<link rel="alternate icon" type="image/png" href="__PUBLIC__/i/favicon.png">
+	<!-- stylesheet css -->
+	<link rel="stylesheet" href="__PUBLIC__/css/about/bootstrap.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/about/font-awesome.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/css/about/templatemo-blue.css">
+	<script src="__PUBLIC__/js/Chart.js"></script>
+	<style>
+		.img-circle:hover{
+			padding: 0 auto;
+			transform:rotate(360deg);
+			/*transform:rotateX(360deg);*/
+			/*transform-origin:center;*/
+
+		}
+	</style>
+</head>
+<body data-spy="scroll" data-target=".navbar-collapse">
+
+<!-- preloader section -->
+<div class="preloader">
+	<div class="sk-spinner sk-spinner-wordpress">
+       <span class="sk-inner-circle"></span>
+     </div>
+</div>
+
+<!-- header section -->
+<header>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<img src="/Upload/{$about['avatar']}" style="transition:all 1.3s;" class="img-responsive img-circle tm-border" width="230px" alt="templatemo easy profile">
+				<hr>
+				<h1 class="tm-title bold shadow">Hi, I am {$about['username']}</h1>
+				<h1 class="white bold shadow">a student,a phper</h1>
+			</div>
+		</div>
+	</div>
+</header>
+
+<!-- about and skills section -->
+<section class="container">
+	<div class="row">
+		<div class="col-md-6 col-sm-12">
+			<div class="about" style="min-height:375px">
+				<h2 class="accent">个人简介</h2>
+				<p>{$about['synopsis']}</p>
+			</div>
+		</div>
+		<div class="col-md-6 col-sm-12">
+			<div class="skills">
+				<h2 class="white">技能列表</h2>
+				<strong>PHP</strong>
+				<span class="pull-right">50%</span>
+					<div class="progress">
+						<div class="progress-bar progress-bar-primary" role="progressbar" 
+                        aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+					</div>
+				<strong>MySQL</strong>
+				<span class="pull-right">50%</span>
+					<div class="progress">
+						<div class="progress-bar progress-bar-primary" role="progressbar" 
+                        aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+					</div>
+				<strong>html&css</strong>
+				<span class="pull-right">50%</span>
+					<div class="progress">
+						<div class="progress-bar progress-bar-primary" role="progressbar" 
+                        aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+					</div>
+				<strong>Python</strong>
+				<span class="pull-right">50%</span>
+					<div class="progress">
+						<div class="progress-bar progress-bar-primary" role="progressbar" 
+                        aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+					</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- education and languages -->
+<section class="container">
+	<div class="row">
+		<div class="col-md-8 col-sm-12">
+			<div class="education">
+				<h2 class="white">我喜欢的几段话</h2>
+					<div class="education-content">
+						<p class="education-description">
+							&nbsp;&nbsp;&nbsp;&nbsp;时间或许会让曾经蒙上尘埃，但却不会风化那些鲜活的记忆。人生不过几十年，谁也捉不准下一秒是不是最后一秒，也不知道下一秒又会突然错过了哪个人。而过去已经过去了，即使一直很用力的奔跑，你也追不回来逝去的东西。只有现在，手里握着的才是最真实的，才是真正是属于自己的。</p>
+
+							　　<p class="education-description">&nbsp;&nbsp;&nbsp;&nbsp;微笑露一点，说话轻一点，做事多一点，理由少一点，脑筋活一点，效率高一点，行动快一点，嘴巴甜一点，肚量大一点。童鞋们能做到吗？我既是存在的，就要活的坚强，放弃不了，那么我们就选择永不放弃。真真实实面对生活面对生命，体验生命中的每一天，真实的生活，真诚的对待自己。</p>
+
+							　　<p class="education-description">&nbsp;&nbsp;&nbsp;&nbsp;人生的路途中，别太奢求当下的状况，人生在世，事事都乃过眼云烟。得也好、失也好，一切都是过眼云烟。想想，不管昨天、今天、明天，能豁然开朗就是美好的一天。</p>
+					</div>
+			</div>
+		</div>
+		<div class="col-md-4 col-sm-12">
+			<div class="languages">
+				<h2>技能雷达</h2>
+				<div style="width:100%">
+					<canvas id="canvas" height="497" width="450"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<!-- footer section -->
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<p>© 2016 | BaAGee丨鲁ICP备16023386号<a href="http://www.baagee.top/" target="_blank">baagee.top</a></p>
+				<ul class="social-icons">
+					<li><a href="http://weibo.com/u/5597526557" target="__blank" class="fa fa-weibo"></a></li>
+                	<li><a href="javascript:;" class="fa fa-qq" data-toggle="tooltip" data-placement="top" title="{$about['qq']}"></a></li>
+					<li><a href="http://git.oschina.net/baagee" target="__blank" class="fa fa-github"></a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<!-- javascript js -->	
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/js/about/bootstrap.min.js"></script>	
+<script src="__PUBLIC__/js/about/jquery.backstretch.min.js"></script>
+<script src="__PUBLIC__/js/about/custom.js"></script>
+	<script>
+	var radarChartData = {
+		labels: ["PHP", "Python", "html", "css", "MySQL", "PhotoShop", "linux"],
+		datasets: [
+			{
+				label: "My Second dataset",
+				fillColor: "rgba(151,187,205,0.2)",
+				strokeColor: "rgba(151,187,205,1)",
+				pointColor: "rgba(151,187,205,1)",
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(151,187,205,1)",
+				data: [50,50,50,50,50,50,50]
+			}
+		]
+	};
+
+	window.onload = function(){
+		window.myRadar = new Chart(document.getElementById("canvas").getContext("2d")).Radar(radarChartData, {
+			responsive: true
+		});
+	}
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip()
+	})
+
+	</script>
+</body>
+</html>

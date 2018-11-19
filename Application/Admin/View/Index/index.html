@@ -1,0 +1,144 @@
+<extend name="Public/base" />
+<block name="content">
+	<!-- content start -->
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">首页</strong> / <small>系统信息</small></div><iframe name="weather_inc" style="margin-top:9px;margin-left:10px;float:right" src="http://i.tianqi.com/index.php?c=code&id=11" width="500" height="15" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" ></iframe>
+			</div>
+
+			<ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
+				<li><a href="/admin/article/articlelist.html" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>文章总数<br/>{$numArticle}</a></li>
+				<li><a href="#" class="am-text-warning"><span class="am-icon-btn am-icon-user"></span><br/>登录人数<br/>{$vito}</a></li>
+				<li><a href="#" class="am-text-danger"><span class="am-icon-btn am-icon-recycle"></span><br/>本月新增文章<br/>{$monthArticle}</a></li>
+				<li><a href="/admin/comment/commlist.html" class="am-text-secondary"><span class="am-icon-btn am-icon-commenting"></span><br/>评论总数<br/>{$numComment}</a></li>
+			</ul>
+
+			<!-- <div class="am-g">
+				<div class="am-u-sm-12">
+			
+				</div>
+			</div> -->
+
+			<div class="am-g">
+				
+			<div class="am-u-sm-12">
+				<div class="am-u-md-6">
+					<div class="am-panel am-panel-default">
+						<div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-1'}">您当前登录位置<span class="am-icon-chevron-down am-fr" ></span></div>
+						<div id="collapse-panel-1" class="am-in">
+							<div id="allmap" style="width: 100%;height: 300px"></div>
+						</div>
+					</div>
+					 <div class="am-panel am-panel-default">
+			            <div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-2'}">浏览器统计<span class="am-icon-chevron-down am-fr" ></span></div>
+			            <div id="collapse-panel-2" class="am-in">
+			              <table class="am-table am-table-bd am-table-bdrs am-table-striped am-table-hover">
+			                <tbody>
+			                <tr>
+			                  <th class="am-text-center">图标</th>
+			                  <th>浏览器</th>
+			                  <th>访问量</th>
+			                </tr>
+			                <foreach name="browser" item="v">
+			                <tr>
+			                  <td class="am-text-center"><img src="__PUBLIC__/i/examples/{$v.browse}.png" alt=""></td>
+			                  <td>{$v.browse}</td>
+			                  <td>{$v.count}</td>
+			                </tr>
+			            	</foreach>
+			                </tbody>
+			              </table>
+			            </div>
+			          </div>
+				</div>
+				
+				<div class="am-u-md-6">
+					<div class="am-panel am-panel-default">
+					<div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-3'}">系统信息<span class="am-icon-chevron-down am-fr" ></span></div>
+					<div id="collapse-panel-3" class="am-in">
+						<table class="am-table am-table-bordered am-table-radius am-table-striped">
+							<volist name="info" id="v">
+								<tr> 
+								<td class="text">{$key}：</td>
+								<td class="input">{$v}</td>
+								</tr>
+							</volist> 
+						</table>
+					</div>
+					</div>
+				</div>
+			</div>
+				
+			</div>
+		</div>
+
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	</block>
+<block name="js">
+	<script>
+		// 百度地图API功能
+		var map = new BMap.Map("allmap");
+		var point = new BMap.Point(116.331398,39.897445);
+		map.centerAndZoom(point,15);
+		map.setMapStyle({style:'grayscale'});//地图主题
+		map.addControl(new BMap.MapTypeControl());          //添加地图类型控件
+		map.disable3DBuilding();
+		map.enableScrollWheelZoom();                         //启用滚轮放大缩小
+
+		var geolocation = new BMap.Geolocation();
+		geolocation.getCurrentPosition(function(r){
+			if(this.getStatus() == BMAP_STATUS_SUCCESS){
+				var mk = new BMap.Marker(r.point);
+				map.addOverlay(mk);
+				map.panTo(r.point);
+			}
+			else {
+				alert('failed'+this.getStatus());
+			}
+		},{enableHighAccuracy: true})
+	</script>
+</block>
+
+
+
+<!-- <div class="am-panel-hd am-cf" data-am-collapse="{target: '#collapse-panel-3'}">最近留言<span class="am-icon-chevron-down am-fr" ></span></div>
+						<div class="am-panel-bd am-collapse am-in am-cf" id="collapse-panel-3">
+							<ul class="am-comments-list admin-content-comment">
+								<li class="am-comment">
+									<a href="#"><img src="http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg?imageView/1/w/96/h/96" alt="" class="am-comment-avatar" width="48" height="48"></a>
+									<div class="am-comment-main">
+										<header class="am-comment-hd">
+											<div class="am-comment-meta"><a href="#" class="am-comment-author">某人</a> 评论于 <time>2014-7-12 15:30</time></div>
+										</header>
+										<div class="am-comment-bd"><p>遵循 “移动优先（Mobile First）”、“渐进增强（Progressive enhancement）”的理念，可先从移动设备开始开发网站，逐步在扩展的更大屏幕的设备上，专注于最重要的内容和交互，很好。</p>
+										</div>
+									</div>
+								</li>
+
+								<li class="am-comment">
+									<a href="#"><img src="http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg?imageView/1/w/96/h/96" alt="" class="am-comment-avatar" width="48" height="48"></a>
+									<div class="am-comment-main">
+										<header class="am-comment-hd">
+											<div class="am-comment-meta"><a href="#" class="am-comment-author">某人</a> 评论于 <time>2014-7-12 15:30</time></div>
+										</header>
+										<div class="am-comment-bd"><p>有效减少为兼容旧浏览器的臃肿代码；基于 CSS3 的交互效果，平滑、高效。AMUI专注于现代浏览器（支持HTML5），不再为过时的浏览器耗费资源，为更有价值的用户提高更好的体验。</p>
+										</div>
+									</div>
+								</li>
+
+							</ul>
+							<ul class="am-pagination am-fr admin-content-pagination">
+								<li class="am-disabled"><a href="#">&laquo;</a></li>
+								<li class="am-active"><a href="#">1</a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+								<li><a href="#">&raquo;</a></li>
+							</ul>
+						</div> -->

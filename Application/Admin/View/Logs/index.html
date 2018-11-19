@@ -1,0 +1,39 @@
+<extend name="Public/base" />
+<block name="content">
+	<div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl"><strong class="am-text-primary am-text-lg">系统日志</strong> / <small>System Log</small></div>
+      </div>
+      <hr/>
+      <div class="am-g">
+		<div class="am-u-sm-12 am-u-md-4">
+			<div class="am-form-group">
+				<div class="am-input-group am-input-group-sm">
+					<span class="am-input-group-label">系统日志</span>
+					<select name="copyfrom" data-am-selected="{btnSize: 'sm'}" id="qaz" onchange="location.href='/admin/logs/index/logname/'+$(this).val()+'.html'">
+						<option value="">当天</option>
+						<foreach name="logFiles" item="v">
+							<option <?php if($_GET['logname']==$v) echo "selected=''";?> value={$v}>{$v}</option>
+						</foreach>
+					</select>
+				</div>
+			</div>
+		</div>
+		只保留近9天日志
+	</div>
+<pre class="brush: bash;">
+{$logs}
+</pre>
+  	</div>
+  	<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+</block>
+<block name="js">
+	<script type="text/javascript">
+		SyntaxHighlighter.all();
+	</script>
+</block>

@@ -1,0 +1,74 @@
+<extend name="Public/base" />
+	<block name="main">
+		<style>
+
+			.article:hover .thumb{
+				transition:all 0.5s;
+				transform:scale(1.2);
+			}
+		</style>
+		<notempty name="bigimg">
+	  <div data-am-widget="slider" class="am-slider am-slider-b2" data-am-slider='{"controlNav":false}' >
+		  <ul class="am-slides">
+		  		<foreach name='bigimg' item='v'>
+		      <li>
+		        	<img src="http://{$_SERVER['SERVER_NAME']}/Upload/{$v.bigimg}">
+		         
+		      </li>
+		  		</foreach>
+		  </ul>
+		</div>
+	</notempty>
+	<notempty name="Atitle">
+		<div class="am-alert" data-am-alert>
+		  <button type="button" class="am-close">&times;</button>
+		  搜索：“{$Atitle}” 的结果</p>
+		</div>
+	</notempty>
+	<div data-am-widget="list_news" class="am-list-news am-list-news-default" >
+		<div class="am-list-news-bd">
+			<ul class="am-list">
+			<empty name="mainlist">
+				<div class="am-u-sm-12">
+			          <p class="am-text-center">没有找到你要的结果</p>
+			        <pre class="page-404">
+			          .----.
+			       _.'__    `.
+			   .--($)($$)---/#\
+			 .' @          /###\
+			 :         ,   #####
+			  `-..__.-' _.-\###/
+			        `;_:    `"'
+			      .'"""""`.
+			     /,  ya ,\\
+			    //nothing!\\
+			    `-._______.-'
+			    ___`. | .'___
+			   (______|______)
+			        </pre>
+			        </div>
+			</empty>
+			
+				<foreach name="mainlist" item="v">
+				<li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left articlelist" style="margin-bottom: 13px;">
+					<div class="am-u-sm-12 am-u-md-4 am-list-thumb">
+						<a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="thumb">
+							<img src="/Upload/{$v.original}" alt="{$v.title}"/>
+						</a>
+					</div>
+					<div class="am-u-sm-12 am-u-md-8 am-list-main">
+						<h3 class="am-list-item-hd"><span class="am-badge am-badge-success am-round">{$v.catid|getMenu}</span>&nbsp;&nbsp;<a href="__CONTROLLER__/detail/article/{$v.article_id}.html" class="">{$v.title}</a></h3>
+						<div class="time-look"><span class="am-icon-clock-o">&nbsp;&nbsp;时间</span>：{$v.create_time|date="Y-m-d H:i:s",###} <span class="am-icon-eye">&nbsp;&nbsp;浏览量</span>: {$v.visits}&nbsp;&nbsp;<span class="am-icon-comment">&nbsp;&nbsp;评论</span>: {$v.conum}</div>
+						<div class="am-article-bd">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$v['content']|specialsub}... <span style="float:right;margin-bottom:3px;margin-right:10px">
+						<a href="__CONTROLLER__/detail/article/{$v.article_id}.html">查看详情</a>
+						</span></div>
+					</div>
+				</li>
+			</foreach>
+				
+			</ul>
+		</div>
+	</div>
+
+{$pageArticle}
+</block>

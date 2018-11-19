@@ -1,0 +1,261 @@
+<extend name="Public/base" />
+<block name="content">
+	<!-- content start -->
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg"><a href="__CONTROLLER__/articlelist.html">文章管理</a></strong> /
+					<small>{$title}</small>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="am-tabs am-margin" data-am-tabs>
+				<ul class="am-tabs-nav am-nav am-nav-tabs">
+					<li class="am-active"><a href="#tab1">基本信息</a></li>
+				</ul>
+
+				<div class="am-tabs-bd">
+					<div class="am-tab-panel am-fade am-in am-active" id="tab1">
+						<notempty name="message">
+							<div class="am-alert am-alert-danger" data-am-alert>
+								{$message}
+							</div>
+						</notempty>
+						<form class="am-form" method="post">
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									标题
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="title" value="{$info.title}" class="am-input-sm">
+									<input type="hidden" name="article_id" value="{$info.article_id}">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									短标题
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" value="{$info.small_title}" name="small_title" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<!--————————————————————————————————————————————————————————-->
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									图片上传
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<div class="am-input-group ">
+										<input type="text" name="original" value="{$info.original}" id="image" autocomplete="off" readonly>
+										<input type="hidden" id="imagethumb" name="thumb" value="{$info.thumb}">
+										<!-- <input type="hidden" id="banner" name="banner" value="{$info.banner}"> -->
+										<span class="am-input-group-btn">
+											<button class="am-btn am-btn-default" id="img_upload" onclick="return false;">选择图片</button>
+										</span>
+									</div>
+									<div class="am-input-group " style="margin-top: .5em;border: 1px solid #cccccc;">
+										<img src="<?php echo $info['original'] ? '/Upload/'.$info['original']:'/Public/uploadify/upload.png';?>" width="150" id="img_show">
+									</div>
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">标题颜色</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<select name="title_font_color" data-am-selected="{btnSize: 'md'}">
+										<option value="black">默认(黑色)</option>
+										<foreach name='titleFontColor' item='v'>
+											<option {$info['title_font_color']==$key ? 'selected=true':''} value="{$key}"><span>{$v}</span></option>
+										</foreach>
+									</select>
+								</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">所属栏目</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<select name="catid" data-am-selected="{btnSize: 'md'}">
+										<foreach name='webSideMenu' item='v'>
+											<option {$info['catid']==$v['menu_id'] ? 'selected=true':''} value="{$v.menu_id}">{$v.name}</option>
+										</foreach>
+									</select>
+								</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">来源</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<select name="copyfrom" data-am-selected="{btnSize: 'md'}">
+										<foreach name="copy_from" item="v">
+											<option {$info['copyfrom']==$key ? 'selected=true':''} value="{$key}">{$v}</option>
+										</foreach>
+									</select>
+								</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">内容</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<script id="content" name="content" type="text/plain" style="height: 200px;">{$content|htmlspecialchars_decode}</script>
+								</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									描述
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="description" value="{$info.description}" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									关键字
+								</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="text" name="keywords" value="{$info.keywords}" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2">&nbsp;</div>
+								<div class="am-u-sm-8 am-u-md-7">
+									<input type="submit" id="save" class="am-btn am-btn-primary am-btn-xs" value="提交保存">
+									<a href="" type="button" class="am-btn am-btn-primary am-btn-xs">放弃保存</a>
+								</div>
+								<div class="am-hide-sm-only am-u-md-3"></div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+			<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	<!-- content end -->
+</block>
+<block name="js">
+<script type="text/javascript" src="__PUBLIC__/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+<script>
+	
+	$(function() {
+		// $("#color").val("{$info.title_font_color}");
+		var ue = UE.getEditor('content', ueditoroption);
+		$('.am-form').submit(function() {
+			var data=$('.am-form').serializeArray();
+			var postData={};
+			$(data).each(function(){
+				postData[this.name]=this.value;
+			});
+			var url="";
+			var article_id=$('input[name="article_id"]').val();
+			if(article_id!=''){
+				url='__CONTROLLER__/updateArticle';
+			}else if(article_id==''){
+				url='__CONTROLLER__/addArticle';
+			}
+			$.post(url,postData,function(msg){
+				if (msg.status==1) {
+					dialog.success2(msg.message);
+					// history.go(-1)
+				} else {
+					dialog.error(msg.message);
+				}
+			});
+			return false;
+		});
+	});
+	var ueditoroption = {
+		'autoClearinitialContent' : false,
+		'toolbars' : [ ['source', 'preview', '|', 'bold', 'italic',
+      'underline', 'strikethrough', 'forecolor', 'backcolor', '|',
+      'justifyleft', 'justifycenter', 'justifyright', '|',
+      'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion',
+      'simpleupload', 'link', 'removeformat', '|', 'rowspacingtop',
+      'rowspacingbottom', 'lineheight', 'indent', 'paragraph', 'fontsize',
+      '|', 'inserttable', 'deletetable', 'insertparagraphbeforetable',
+      'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells',
+      'mergeright', 'mergedown', 'splittocells', 'splittorows',
+      'splittocols', '|', 'anchor', 'map', 'print', 'drafts','insertcode'] ],
+		'elementPathEnabled' : false,
+		'initialFrameHeight' : 400,
+		'focus' : false,
+		'maximumWords' : 3999
+	};
+
+/**************************图片上传***************************8*/
+
+	var uploadConfig={
+	    'buttonClass' : 'am-btn am-btn-default',
+	    'multi' : false,
+	    'swf' : '__PUBLIC__/uploadify/uploadify.swf',///Public/uploadify/uploadify.swf
+	    'uploader' : '__MODULE__/Upload/index.html',
+	    'fileTypeExts' : '*.jpg;*.png',
+	    'fileSizeLimit' : '3MB',
+		'formData' : {
+		'thumb' : 1
+	    },
+	    'onInit' : function(instance) {
+	        $("#img_upload").attr('style', '');
+	        instance.button.removeClass("uploadify-button").attr('style', '').html('选择图片');
+	    },
+	    'overrideEvents' : [ 'onSelectError', 'onDialogClose' ],
+	    'onSelectError' : function(file, errorCode, errorMsg) {
+		switch (errorCode) {
+			case -100:
+				dialog.error("上传的文件数量已经超出系统限制的"
+				 + $('#img_upload').uploadify('settings', 'queueSizeLimit')
+				 + "个文件！");
+			break;
+			case -110:
+				dialog.error("文件 \"" + file.name + "\" 大小超出系统限制的"
+				 + $('#img_upload').uploadify('settings', 'fileSizeLimit')
+				 + "大小！");
+			break;
+			case -120:
+				dialog.error("文件 \"" + file.name + "\" 大小异常！");
+			break;
+			case -130:
+				dialog.error("文件 \"" + file.name + "\" 类型不正确！");
+			break;
+			default:
+				msgText += "错误代码：" + errorCode + "\n" + errorMsg;
+		}
+	    },
+	    'onUploadSuccess' : function(file, data, response) {
+			var code=$(data).find('code').text();
+			if(code==0){
+				dialog.success2('图片上传成功');
+				var img=$(data).find('mdthumb').text();
+				var imagethumb=$(data).find('thumb').text();
+				// var banner=$(data).find('banner').text();
+				$("#image").val(img);
+				$("#imagethumb").val(imagethumb);
+				// $("#banner").val(banner);
+				$("#img_show").attr('src', '{$Think.const.upload_path}'+img);
+			}else{
+				dialog.error($(data).find('msg').text());
+			}
+	    }
+	};
+$('#img_upload').uploadify(uploadConfig);
+</script>
+</block>

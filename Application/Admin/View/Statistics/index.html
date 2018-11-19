@@ -1,0 +1,108 @@
+<extend name="Public/base" />
+<block name="content">
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">数据统计</strong> / <small><span class="am-icon-table"></span></small></div>
+			</div>
+
+			<hr>
+			<div class="am-g">
+				<div style="float:left;text-align:center" class="am-u-sm-12 am-u-md-7">
+					<canvas id="canvas1" height="350" width="850"></canvas>
+					近12个月每个月文章统计
+				</div>
+				<div style="float:right;text-align:center"  class="am-u-sm-12 am-u-md-5">
+					<canvas id="canvas3" height="350" width="600"></canvas><br>
+					各个分类文章所占百分比
+				</div>
+			</div>
+			<br>
+			<hr>
+			<div style="width:100%;text-align:center">
+				<canvas id="canvas2" height="750" width="1400"></canvas>
+				近一个月文章统计
+				<br>
+			</div>
+		</div>
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+</block>
+<block name="js">
+<script src="__PUBLIC__/js/Chart.js"></script>
+
+<script>
+var barChartData = {
+	labels : [
+		<?php foreach($chars1 as $k=>$v):?>
+			"{$v['months']}月",
+		<?php endforeach;?>
+	],
+	datasets : [
+		{
+			fillColor : "rgba(151,187,205,0.5)",
+			strokeColor : "rgba(151,187,205,0.8)",
+			highlightFill : "rgba(151,187,205,0.75)",
+			highlightStroke : "rgba(151,187,205,1)",
+			data : [
+				<?php foreach($chars1 as $k=>$v):?>
+					{$v['count']},
+				<?php endforeach;?>
+			]
+		}
+	]
+
+}
+var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+var lineChartData = {
+	labels : [
+		<?php foreach($chars2 as $k=>$v):?>
+			"{$v['days']}日",
+		<?php endforeach;?>
+	],
+	datasets : [
+		{
+			label: "My Second dataset",
+			fillColor : "rgba(151,187,205,0.2)",
+			strokeColor : "rgba(151,187,205,1)",
+			pointColor : "rgba(151,187,205,1)",
+			pointStrokeColor : "#fff",
+			pointHighlightFill : "#fff",
+			pointHighlightStroke : "rgba(151,187,205,1)",
+			data : [
+				<?php foreach($chars2 as $k=>$v):?>
+					{$v['count']},
+				<?php endforeach;?>
+			]
+		}
+	]
+}
+var pieData = [
+	<?php foreach($chars3 as $k=>$v):?>
+		{
+			value: {$v['count']},
+			color:"{$v['menu_bgcolor']}",
+			highlight: "#FF5A5E",
+			label: "{$v['name']}"
+		},
+	<?php endforeach;?>
+	];
+window.onload = function(){
+	var ctx1 = document.getElementById("canvas1").getContext("2d");
+	var ctx2 = document.getElementById("canvas2").getContext("2d");
+	var ctx3 = document.getElementById("canvas3").getContext("2d");
+	window.myBar = new Chart(ctx1).Bar(barChartData, {
+		responsive : true
+	});
+	window.myLine = new Chart(ctx2).Line(lineChartData, {
+		responsive: true
+	});
+	window.myPie = new Chart(ctx3).Pie(pieData, {
+		responsive: true
+	});
+}
+</script>
+</block>

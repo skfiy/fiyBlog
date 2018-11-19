@@ -1,0 +1,99 @@
+<extend name="Public/base" />
+<block name="content">
+	<!-- content start -->
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-cf am-padding am-padding-bottom-0">
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">上传图片</strong></div>
+      </div>
+      <hr/>
+
+  <figure data-am-widget="figure" class="am am-figure am-figure-default "   data-am-figure="{  pureview: 'true' }">
+      <img src="http://s.amazeui.org/media/i/demos/pure-1.jpg?imageView2/0/w/640" width="640px" height="360px" id="img_show"/>
+  </figure>
+<div class="am-input-group" style="margin: 20px auto">
+    <button id="saveHead" type="button" style="float:left" class="am-btn am-btn-secondary">保存图片</button>
+    <span style="float:left">
+    <button style="float:left" type="button" class="am-btn am-btn-secondary" id="img_upload" onclick="return false;">选择图片</button>
+    </span>
+  <input type="hidden" name="" id="image" value="">
+</div>
+  </div>
+  <footer class="admin-content-footer">
+      <hr>
+      <p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+    </footer>
+  </div>
+  </block>
+  <block name="js">
+  <script type="text/javascript" src="__PUBLIC__/uploadify/jquery.uploadify.min.js"></script>
+  <script>
+
+    $("#saveHead").click(function(){
+      var data=$("#image").val();
+      var postData={'image':data};
+      $.post("__ACTION__",postData,function(result){
+        if(result.status==0){
+          dialog.error(result.message);
+        }else if(result.status==1){
+          dialog.success2(result.message);
+        }
+      });
+    });
+
+    /*图片上传*/
+    var uploadConfig={
+      'buttonClass' : 'am-btn am-btn-secondary',
+      'multi' : false,
+      'swf' : '__PUBLIC__/uploadify/uploadify.swf',///Public/uploadify/uploadify.swf
+      'uploader' : '__MODULE__/Upload/index.html',
+      'fileTypeExts' : '*.jpg;*.png',
+      'fileSizeLimit' : '3MB',
+      'formData' : {
+        'id' : '{$Think.session.aid}',
+        'avatar':0,
+        'bigimg':1
+      },
+      'onInit' : function(instance) {
+        $("#img_upload").attr('style', '');
+        instance.button.removeClass("uploadify-button").attr('style', '').html('选择图片');
+      },
+      'overrideEvents' : [ 'onSelectError', 'onDialogClose' ],
+      'onSelectError' : function(file, errorCode, errorMsg) {
+        switch (errorCode) {
+          case -100:
+            dialog.error("上传的文件数量已经超出系统限制的"
+                + $('#img_upload').uploadify('settings', 'queueSizeLimit')
+                + "个文件！");
+            break;
+          case -110:
+            dialog.error("文件 \"" + file.name + "\" 大小超出系统限制的"
+                + $('#img_upload').uploadify('settings', 'fileSizeLimit')
+                + "大小！");
+            break;
+          case -120:
+            dialog.error("文件 \"" + file.name + "\" 大小异常！");
+            break;
+          case -130:
+            dialog.error("文件 \"" + file.name + "\" 类型不正确！");
+            break;
+          default:
+            msgText += "错误代码：" + errorCode + "\n" + errorMsg;
+        }
+      },
+      'onUploadSuccess' : function(file, data, response) {
+        var code=$(data).find('code').text();
+        if(code==0){
+          dialog.success2('图片上传成功');
+          var img=$(data).find('imgurl').text();
+          $("#image").val(img);
+          $("#img_show").attr('src', '{$Think.const.upload_path}'+img);
+        }else{
+          dialog.error($(data).find('msg').text());
+        }
+      }
+    };
+    $('#img_upload').uploadify(uploadConfig);
+  </script>
+
+  </block>

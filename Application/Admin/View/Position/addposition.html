@@ -1,0 +1,128 @@
+<extend name="Public/base" />
+<block name="content">
+	<!-- content start -->
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg"><a href="__CONTROLLER__/positionlist.html">文章位管理</a></strong> /
+					<small>{$title}</small>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="am-tabs am-margin" data-am-tabs>
+				<ul class="am-tabs-nav am-nav am-nav-tabs">
+					<li class="am-active"><a href="#tab1">基本信息</a></li>
+				</ul>
+
+				<div class="am-tabs-bd">
+					<div class="am-tab-panel am-fade am-in am-active" id="tab1">
+						<notempty name="message">
+							<div class="am-alert am-alert-danger" data-am-alert>
+								{$message}
+							</div>
+						</notempty>
+						<form class="am-form" id="editposition">
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									推荐位名
+								</div>
+								<div class="am-u-sm-8 am-u-md-4">
+									<input type="text" name="name" value="{$info.name}" class="am-input-sm">
+									<input type="hidden" name="id" value="{$info.id}">
+								</div>
+								<div class="am-hide-sm-only am-u-md-6">*必填，不可重复</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">
+									描述
+								</div>
+								<div class="am-u-sm-8 am-u-md-4">
+									<input type="text" value="{$info.description}" name="description" class="am-input-sm">
+								</div>
+								<div class="am-hide-sm-only am-u-md-6">*必填，不可重复</div>
+							</div>
+
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right">状态</div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<div class="am-btn-group" data-am-button>
+										<label class="am-btn am-btn-default am-btn-xs">
+											<input type="radio" name="status" value=1 <if condition="$info.status eq 1"> checked</if>> 开启
+										</label>
+										<label class="am-btn am-btn-default am-btn-xs">
+											<input type="radio" name="status" value=0 <if condition="$info.status eq 0"> checked</if>> 关闭
+										</label>
+									</div>
+								</div>
+							</div>
+							<div class="am-g am-margin-top">
+								<div class="am-u-sm-4 am-u-md-2 am-text-right"></div>
+								<div class="am-u-sm-8 am-u-md-10">
+									<input type="submit" id="save" class="am-btn am-btn-primary am-btn-xs" value="提交保存">
+									<a href="" type="button" class="am-btn am-btn-primary am-btn-xs">放弃保存</a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	<!-- content end -->
+</block>
+<block name="js">
+	<script>
+		$("#editposition").submit(function(){
+			var name=$('input[name="name"]').val();
+			var description=$('input[name="description"]').val();
+			var id=$('input[name="id"]').val();
+			var message='';
+			if(name==''){
+				message+="推荐位名不能为空！";
+			}
+			if(description==''){
+				message+="描述不能为空！";
+			}
+			if(message!=''){
+				dialog.error(message);
+				return false;
+			}
+			var data=$(".am-form").serializeArray();
+			var postData={};
+			$(data).each(function(){
+				postData[this.name]=this.value;
+			});
+			var url="";
+			if(id!=''){
+				url='__CONTROLLER__/updatePosition';
+			}else if(id==''){
+				url='__CONTROLLER__/addPosition';
+			}
+			$.post(url,postData,function(result){
+				if(result.status==0){
+					dialog.error(result.message);
+				}else if(result.status==1){
+					if(id==''){
+						dialog.success2(result.message);
+						location.reload(true);
+					}else if(id!=''){
+						// dialog.success(result.message,'__CONTROLLER__/menulist');
+						// location.reload(true);
+						dialog.success2(result.message);
+						location.href="__CONTROLLER__/positionList.html";
+					}
+				}
+			});
+			return false;
+		});
+	</script>
+</block>

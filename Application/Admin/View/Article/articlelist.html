@@ -1,0 +1,221 @@
+<extend name="Public/base" />
+<block name="content">
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">文章管理</strong> / <small><span class="am-icon-table"></span></small></div>
+			</div>
+
+			<hr>
+
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-md-1">
+					<div class="am-btn-toolbar">
+						<div class="am-btn-group am-btn-group-sm">
+							<a href="__CONTROLLER__/addarticle.html" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</a>
+						</div>
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-md-4">
+					<div class="am-form-group">
+						<div class="am-input-group am-input-group-sm">
+							<span class="am-input-group-label">来源</span>
+							<select name="copyfrom" data-am-selected="{btnSize: 'sm'}" id="copyfrom" onchange="location.href='/admin/article/articlelist/status/'+$('#status').val()+'/copyfrom/'+$(this).val()+'.html'">
+								<option value="9">全部</option>
+								<foreach name="copyFrom" item="v">
+									<option value={$key}>{$v}</option>
+								</foreach>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="am-u-sm-12 am-u-md-4">
+					<div class="am-form-group">
+						<div class="am-input-group am-input-group-sm">
+							<span class="am-input-group-label">状态</span>
+							<select name="status" data-am-selected="{btnSize: 'sm'}" id="status" onchange="location.href='/admin/article/articlelist/status/'+$(this).val()+'/copyfrom/'+$('#copyfrom').val()+'.html'">
+								<option value="9">全部</option>
+								<option value=2>停用</option>
+								<option value=1>正常</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+					<form class="am-form" method="post" action=''>
+						<div class="am-input-group am-input-group-sm">
+							<input type="text" name="title" class="am-form-field" placeholder="按照文章标题搜索">
+			          <span class="am-input-group-btn">
+			            <button class="am-btn am-btn-default" type="submit"><span class="am-icon-search"></span></button>
+			          </span>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="am-g">
+				<div class="am-u-sm-12">
+						<table class="am-table-hover am-table am-table-bordered am-table-radius">
+							<thead>
+							<tr class="am-primary">
+								<th><div ><input value="1" onclick="check()" id="allcheck" type="checkbox"></div></th>
+								<th width="60">排序</th>
+								<th class="table-id">ID</th>
+								<th class="table-title">标题</th>
+								<th class="table-type">栏目</th>
+								<th>来源</th>
+								<th>封面图</th>
+								<th>创建时间</th>
+								<!-- <th>修改时间</th> -->
+								<th>状态</th>
+								<th class="table-set">操作</th>
+							</tr>
+							</thead>
+							<tbody>
+							<form class="am-form" id="listorder">
+							<foreach name="articleLists" item="v">
+								<tr>
+									<td><div class="am-checkbox"><input name="pushme" value="{$v.article_id}" type="checkbox"></div></td>
+									<td><input name="listorder[{$v.article_id}]" class="am-form-field am-input-sm" value="{$v.listorder}" type="text" /></td>
+									<td>{$v.article_id}</td>
+									<td><span style="color:{$v.title_font_color}">{$v.title|mb_substr=0,15,'utf-8'}...</span></td>
+									<td>{$v.catid|getMenuName=$cats,###}</td>
+									<td>{$v.copyfrom|getCoptFrom}</td>
+									<td>
+										<!-- <button class="am-btn am-btn-primary"
+										        data-am-popover="{theme: 'primary',content: '<img src='/Upload/<?php echo $v['thumb'];?>' width='150px'>', trigger: 'hover focus'}">
+										  查看
+										</button> -->
+										<img src='/Upload/{$v.thumb}' width='30px'>
+										<!--{$v['thumb']|isThumb}-->
+									</td>
+									<td>{$v.create_time|date="Y-m-d H:i:s",###}</td>
+									<!-- <td>{$v.update_time|date="Y-m-d H:i:s",###}</td> -->
+									<td>{$v['status']?'正常':'停用'}</td>
+									<td>
+										<div class="am-btn-toolbar">
+											<div class="am-btn-group am-btn-group-xs">
+												<a href="__CONTROLLER__/editarticle/id/{$v.article_id}.html" class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+												<a class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"  onclick="setStatus({$v.article_id},{$v.status},true)"><span class="am-icon-trash-o"></span> 删除</a>
+												<a target="_blank" href="/home/index/detail/article/{$v.article_id}.html" class="am-btn am-btn-default am-btn-xs am-text-success am-hide-sm-only"  ><span class="am-icon-trash-o"></span> 预览</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</foreach>
+							</form>
+							</tbody>
+						</table>
+						<div class="am-cf">
+							<div style="float:left;margin-top:15px">
+								<button id="saveorder" type="button" class="am-btn am-btn-primary"><span class="am-icon-sort"></span>&nbsp;更新排序</button>
+							</div>
+						<!-- 	<div class="am-u-sm-12 am-u-md-4" style="margin-top:15px;">
+							<div class="am-form-group">
+								<div class="am-input-group">
+									<div class="am-input-group">
+									<select name="positions" data-am-selected="{btnSize: 'md'}" id="positions">
+										<option value="0">请选择推荐位</option>
+										<foreach name="positions" item="v">
+											<option value={$v.id}>{$v.name}</option>
+										</foreach>
+									</select>
+									<span class="am-input-group-btn">
+							        <button class="am-btn am-btn-primary" id="push" type="button">推送</button>
+							      </span>
+									</div>
+								</div>
+							</div>
+						</div> -->
+							<div class="am-fr">
+								{$pageArticle}
+							</div>
+						</div>
+
+						<hr />
+						<p>注：.....</p>
+				</div>
+			</div>
+		</div>
+
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	<!-- content end -->
+</block>
+<block name="js">
+	<script>
+		$('#copyfrom').val({$copyfrom});
+		$("#status").val({$status});
+		function setStatus(id,status,isDelete) {
+			if(confirm('真的要删除吗?')){
+				$.post('__CONTROLLER__/setStatus', {id:id,status: status,isDelete:isDelete}, function(result) {
+					if(result.status==0){
+						dialog.error(result.message);
+					}else if(result.status==1){
+						dialog.success(result.message);
+						location.reload(true);
+					}
+				});
+			}
+		}
+		/*全选，取消全选*/
+		function check(){
+			var item=$("#allcheck").val();
+			if(item==1){
+				for(var i=0;i<$(":checkbox").length;i++){
+					$(":checkbox")[i].checked=true;
+					$("#allcheck").val(2)
+				}
+			}else{
+				for(var i=0;i<$(":checkbox").length;i++){
+					$(":checkbox")[i].checked=false;
+					$("#allcheck").val(1)
+				}
+			}
+		}
+
+		$("#saveorder").click(function() {
+			var data=$("#listorder").serializeArray();
+			var postData={};
+			$(data).each(function() {
+				postData[this.name]=this.value;
+			});
+			var url="__CONTROLLER__/listorder";
+			$.post(url, postData, function(result) {
+				if(result.status==0){
+					dialog.error(result.message);
+				}else if(result.status==1){
+					// dialog.success(result.message,result['data']['url']);
+					dialog.success2(result.message);
+//					location.reload(true);
+				}
+			});
+		});
+
+		$("#push").click(function(){
+			var position=$("#positions").val();
+			if(position==0){
+				dialog.error("请选择推荐位");
+				return 0;
+			}
+			var pushs={};
+			var postData={};
+			$("input[name='pushme']:checked").each(function(i){
+				pushs[i]=$(this).val();
+			});
+			postData['pushs']=pushs;
+			postData['position_id']=position;
+			$.post('__CONTROLLER__/pushArticle',postData,function(result){
+				if(result.status==0){
+					dialog.error(result.message);
+				}else if(result.status==1){
+					dialog.success2(result.message);
+				}
+			});
+		});
+	</script>
+</block>

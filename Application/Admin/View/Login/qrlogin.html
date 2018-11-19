@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>登录确认</title>
+	<link rel="stylesheet" href="__PUBLIC__/css/amazeui.min.css"/>
+	<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+</head>
+<body><div style="margin:20px 40%">
+	<button type="button" class="am-btn am-btn-primary am-radius">确认</button>
+	</div>
+</body>
+<script>
+	$('button').click(function() {
+		var t=new Date().getTime();
+		$.post('__SELF__', {time:t}, function(res) {
+			if(res.status==1){
+				alert(res.message);
+			}else{
+				alert(res.message);
+			}
+		});
+	});
+</script>
+</html>

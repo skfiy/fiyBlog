@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+  Options +FollowSymlinks
+  RewriteEngine On
+
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+  #防盗链如果请求来源没有当前域名，则说明来自其他网站请求资源
+  rewritecond %{HTTP_REFERER} !www.baagee.top
+  RewriteRule .*\.png [F]
+</IfModule>

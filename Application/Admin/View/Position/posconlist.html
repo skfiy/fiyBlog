@@ -1,0 +1,146 @@
+<extend name="Public/base" />
+<block name="content">
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding am-padding-bottom-0">
+				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">文章位内容管理</strong> / <small><span class="am-icon-table"></span></small></div>
+			</div>
+
+			<hr>
+
+			<div class="am-g">
+				<div class="am-u-sm-12 am-u-md-4">
+					<div class="am-form-group">
+						<div class="am-input-group am-input-group-sm">
+							<span class="am-input-group-label">推荐位</span>
+							<select name="type" data-am-selected="{btnSize: 'sm'}" id="posid" onchange="location.href='/index.php/admin/position/posConList/status/'+$('#status').val()+'/posid/'+$(this).val()">
+								<option value="2499">全部</option>
+								<foreach name="positions" item="v">
+									<option value={$v.id}>{$v.name}</option>
+								</foreach>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="am-u-sm-12 am-u-md-4">
+					<div class="am-form-group">
+						<div class="am-input-group am-input-group-sm">
+							<span class="am-input-group-label">状态</span>
+							<select name="status" data-am-selected="{btnSize: 'sm'}" id="status" onchange="location.href='/index.php/admin/position/posConList/status/'+$(this).val()+'/posid/'+$('#posid').val()">
+								<option value="9">全部</option>
+								<option value=2>关闭</option>
+								<option value=1>启用</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="am-u-sm-12 am-u-md-3">
+					<form class="am-form" method="post" action="">
+						<div class="am-input-group am-input-group-sm">
+							<input type="text" name="title" class="am-form-field" placeholder="按照标题搜索">
+			          <span class="am-input-group-btn">
+			            <button class="am-btn am-btn-default" type="submit"><span class="am-icon-search"></span></button>
+			          </span>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="am-g">
+				<div class="am-u-sm-12">
+					<form class="am-form" id="listorder">
+						<table class="am-table-hover am-table am-table-bordered am-table-radius">
+							<thead>
+							<tr class="am-primary">
+								<th width="60">排序</th><th class="table-id">ID</th><th class="table-title">标题</th><th>推荐位</th><th class="table-type">推送时间</th><th>封面</th><th class="table-date am-hide-sm-only">状态</th><th class="table-set">操作</th>
+							</tr>
+							</thead>
+							<tbody>
+							<foreach name="info" item="v">
+								<tr>
+									<td><input name="listorder[{$v.id}]" class="am-form-field am-input-sm" value="{$v.listorder}" type="text" /></td>
+									<td>{$v.id}</td>
+									<td>{$v.title|substr=0,66}...</td>
+									<td>{$v.name}</td>
+									<td>{$v.create_time|date="Y-m-d H:i:s",###}</td>
+									<td><img src='/Upload/{$v.thumb}' width='30px'></td>
+									<td class="am-hide-sm-only">
+										<if condition="$v.status eq 1">
+											启用
+											<else />
+											关闭
+										</if>
+									</td>
+									<td>
+										<div class="am-btn-toolbar">
+											<div class="am-btn-group am-btn-group-xs">
+												<a href="__CONTROLLER__/editPosCon/id/{$v.id}.html" class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</a>
+												<a class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"  onclick="setStatus({$v.id},{$v.status},true,true)"><span class="am-icon-trash-o"></span> 删除</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</foreach>
+							</tbody>
+						</table>
+						<div class="am-cf">
+							<div style="float:left;margin-top:15px">
+								<button id="saveorder" type="button" class="am-btn am-btn-primary"><span class="am-icon-sort"></span>&nbsp;更新排序</button>
+							</div>
+							<div class="am-fr">
+								{$pageMenu}
+							</div>
+						</div>
+						<hr />
+						<p>注：.....</p>
+					</form>
+				</div>
+
+
+			</div>
+		</div>
+
+		<footer class="admin-content-footer">
+			<hr>
+			<p class="am-padding-left">© 2016 | BaAGee丨鲁ICP备16023386号</p>
+		</footer>
+	</div>
+	<!-- content end -->
+</block>
+<block name="js">
+	<script>
+		$('#posid').val({$posid});
+		$("#status").val({$status});
+		function setStatus(id,status,isDelete,isPosCon) {
+			if(confirm('真的要删除吗?')){
+				$.post('__CONTROLLER__/setStatus', {id:id,status: status,isDelete:isDelete,isPosCon:isPosCon}, function(result) {
+					if(result.status==0){
+						dialog.error(result.message);
+					}else if(result.status==1){
+						dialog.success1(result.message);
+						location.reload(true);
+					}
+				});
+			}
+		}
+
+		$("#saveorder").click(function() {
+			var data=$("#listorder").serializeArray();
+			var postData={};
+			$(data).each(function() {
+				postData[this.name]=this.value;
+			});
+			var url="__CONTROLLER__/listorder";
+			$.post(url, postData, function(result) {
+				if(result.status==0){
+					dialog.error(result.message);
+				}else if(result.status==1){
+					// dialog.success(result.message,result['data']['url']);
+					dialog.success2(result.message);
+//					location.reload(true);
+				}
+			});
+		});
+	</script>
+</block>
